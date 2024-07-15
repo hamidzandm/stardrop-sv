@@ -1,0 +1,112 @@
+[
+    {   "_id": 1,
+        "name": "Alex",
+        "age": 24,
+        "birthday": "Spring 13",
+        "gender": "Male",
+        "location": "Pelican Town",
+        "region": "Central Valley",
+        "datable": true,
+        "manners": "Polite",
+        "social": "Friendly",
+        "optimism": "High",
+        "relations": {
+            "friends": ["Sam", "Sebastian"],
+            "family": ["Evelyn", "George"]
+        },
+        "favorites": {
+            "food": "Complete Breakfast",
+            "gift": "Salmon Dinner"
+        },
+        "portraits": ["1_portrait.png", "alex_portrait2.png"],
+        "sprites": ["alex_sprite1.png", "alex_sprite2.png"]
+    },
+    {   "_id": 2,
+        "name": "Emily",
+        "age": 27,
+        "birthday": "Spring 27",
+        "gender": "Female",
+        "location": "Pelican Town",
+        "region": "Central Valley",
+        "datable": true,
+        "manners": "Kind",
+        "social": "Outgoing",
+        "optimism": "Very High",
+        "relations": {
+            "friends": ["Sandy", "Haley"],
+            "family": ["Haley"]
+        },
+        "favorites": {
+            "food": "Salad",
+            "gift": "Cloth"
+        },
+        "portraits": ["2_portrait.png", "emily_portrait2.png"],
+        "sprites": ["emily_sprite1.png", "emily_sprite2.png"]
+    },
+    {   "_id": 3,
+        "name": "Sam",
+        "age": 22,
+        "birthday": "Summer 17",
+        "gender": "Male",
+        "location": "Pelican Town",
+        "region": "Central Valley",
+        "datable": true,
+        "manners": "Easygoing",
+        "social": "Friendly",
+        "optimism": "Moderate",
+        "relations": {
+            "friends": ["Sebastian", "Abigail"],
+            "family": ["Kent", "Jodi", "Vincent"]
+        },
+        "favorites": {
+            "food": "Pizza",
+            "gift": "Cactus Fruit"
+        },
+        "portraits": ["3_portrait.png", "sam_portrait2.png"],
+        "sprites": ["sam_sprite1.png", "sam_sprite2.png"]
+    },
+    {   "_id": 4,
+        "name": "Maru",
+        "age": 21,
+        "birthday": "Summer 10",
+        "gender": "Female",
+        "location": "Pelican Town",
+        "region": "Central Valley",
+        "datable": true,
+        "manners": "Polite",
+        "social": "Shy",
+        "optimism": "High",
+        "relations": {
+            "friends": ["Penny"],
+            "family": ["Demetrius", "Robin", "Sebastian"]
+        },
+        "favorites": {
+            "food": "Strawberry",
+            "gift": "Battery Pack"
+        },
+        "portraits": ["4_portrait.png", "maru_portrait2.png"],
+        "sprites": ["maru_sprite1.png", "maru_sprite2.png"]
+    },
+    {   "_id": 5,
+        "name": "Penny",
+        "age": 25,
+        "birthday": "Fall 2",
+        "gender": "Female",
+        "location": "Pelican Town",
+        "region": "Central Valley",
+        "datable": true,
+        "manners": "Kind",
+        "social": "Introverted",
+        "optimism": "Moderate",
+        "relations": {
+            "friends": ["Maru"],
+            "family": ["Pam"]
+        },
+        "favorites": {
+            "food": "Tom Kha Soup",
+            "gift": "Poppy"
+        },
+        "portraits": ["5_portrait.png", "penny_portrait2.png"],
+        "sprites": ["penny_sprite1.png", "penny_sprite2.png"]
+    }
+]

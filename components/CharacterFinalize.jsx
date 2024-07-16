@@ -11,7 +11,7 @@ const CharacterFinalize = ({ character }) => {
   const [jsonInput, setJsonInput] = useState('');
   const [scheduleJson, setScheduleJson] = useState('');
   const [preferencesJson, setPreferencesJson] = useState('');
-  const [scheduleExplanation, setScheduleExplanation] = useState(''); // State for storing schedule explanation
+  const [scheduleExplanation, setScheduleExplanation] = useState('');
   const [npcGiftsData, setNpcGiftsData] = useState(null);
   const [dialogues, setDialogues] = useState([]);
   const [giftDialogues, setGiftDialogues] = useState({});
@@ -31,14 +31,16 @@ const CharacterFinalize = ({ character }) => {
     console.log("Fetching data for character:", character.name);
 
     try {
+      // Fetch schedule explanation and merge with character
+      const explanation = await generateScheduleExplanation(character);
+      setScheduleExplanation(explanation);
+      const characterWithExplanation = { ...character, scheduleExplanation: explanation };
+      setLoadingSections(prev => ({ ...prev, scheduleExplanation: false }));
+
       // Fetch and set schedule, dialogues, and gift dialogues
-      const { schedule, dialogues, giftDialogues } = await generateSchedule(character);
+      const { schedule, dialogues, giftDialogues } = await generateSchedule(characterWithExplanation);
       setScheduleJson(JSON.stringify(schedule, null, 2));
       setLoadingSections(prev => ({ ...prev, schedule: false }));
-
-      const explanation = await generateScheduleExplanation(schedule);
-      setScheduleExplanation(explanation);
-      setLoadingSections(prev => ({ ...prev, scheduleExplanation: false }));
 
       // Fetch and set NPC gifts
       const combinedString = `${character.personality.foodAndDrinks} ${character.personality.others}`;
@@ -71,7 +73,7 @@ const CharacterFinalize = ({ character }) => {
       const dialoguesArray = extractDialoguesFromSchedule(dialogues);
       setDialogues(dialoguesArray);
       const schedules = extractSchedules(JSON.stringify(schedule));
-      setJsonInput(JSON.stringify(transformCharacterData(character, dialoguesArray, schedules, giftDialogues, nearestKeys), null, 2));
+      setJsonInput(JSON.stringify(transformCharacterData(characterWithExplanation, dialoguesArray, schedules, giftDialogues, nearestKeys), null, 2));
       
     } catch (error) {
       console.error('Failed to fetch data:', error);

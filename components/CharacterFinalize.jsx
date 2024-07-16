@@ -1,92 +1,85 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { transformCharacterData } from '../utils/contentCreation';
 import CharacterDialoguesTable from './CharacterDialoguesTable';
 import ScheduleExplanation from './ScheduleExplanation';
 import PreferencesList from './PreferencesList';
 import Spinner from './Spinner'; 
-import { generateSchedule, generateScheduleExplanation, generateItems, processPreferences } from '@/llm_langchain'; // Adjust the path if necessary
+import { generateSchedule, generateItems, processPreferences } from '@/llm_langchain';
 import getNearestItemKeys from '@/utils/getNearestItemsKeys'; 
 
 const CharacterFinalize = ({ character }) => {
   const [jsonInput, setJsonInput] = useState('');
   const [scheduleJson, setScheduleJson] = useState('');
-  const [preferencesJson, setPreferencesJson] = useState(''); // State for Preferences JSON
-  const [scheduleExplanation, setScheduleExplanation] = useState(''); // State for storing schedule explanation
-  const [npcGiftsData, setNpcGiftsData] = useState(null); // State for storing NPC Gifts data
-  const [dialogues, setDialogues] = useState([]); // State for storing dialogues
-  const [giftDialogues, setGiftDialogues] = useState({}); // State for storing gift dialogues
-  const [nearestItemKeys, setNearestItemKeys] = useState({}); // State for storing nearest item keys
-  const [loading, setLoading] = useState(true); // Single state to track overall loading status
+  const [preferencesJson, setPreferencesJson] = useState('');
+  const [npcGiftsData, setNpcGiftsData] = useState(null);
+  const [dialogues, setDialogues] = useState([]);
+  const [giftDialogues, setGiftDialogues] = useState({});
+  const [nearestItemKeys, setNearestItemKeys] = useState({});
+  const [loading, setLoading] = useState(true);
   const [loadingSections, setLoadingSections] = useState({
     schedule: true,
-    scheduleExplanation: true,
     npcGifts: true,
     preferences: true,
     dialogues: true,
     nearestItems: true,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch and set schedule, dialogues, and gift dialogues
-        const { schedule, dialogues, giftDialogues } = await generateSchedule(character);
-        setScheduleJson(JSON.stringify(schedule, null, 2));
-        setLoadingSections(prev => ({ ...prev, schedule: false }));
+  const fetchData = useCallback(async () => {
+    if (!character) return;
+    console.log("Fetching data for character:", character.name);
 
-        // const explanation = await generateScheduleExplanation(schedule);
-        // setScheduleExplanation(explanation);
-        // setLoadingSections(prev => ({ ...prev, scheduleExplanation: false }));
+    try {
+      // Fetch and set schedule, dialogues, and gift dialogues
+      const { schedule, dialogues, giftDialogues } = await generateSchedule(character);
+      setScheduleJson(JSON.stringify(schedule, null, 2));
+      setLoadingSections(prev => ({ ...prev, schedule: false }));
 
-        // Fetch and set NPC gifts
-        const combinedString = `${character.personality.foodAndDrinks} ${character.personality.others}`;
-        const npcGifts = await generateItems(combinedString);
-        setNpcGiftsData(npcGifts);
-        setLoadingSections(prev => ({ ...prev, npcGifts: false }));
+      // Fetch and set NPC gifts
+      const combinedString = `${character.personality.foodAndDrinks} ${character.personality.others}`;
+      const npcGifts = await generateItems(combinedString);
+      setNpcGiftsData(npcGifts);
+      setLoadingSections(prev => ({ ...prev, npcGifts: false }));
 
-        // Fetch and set preferences
-        const formattedPreferences = {
-          like: npcGifts.like || [],
-          dislike: npcGifts.dislike || [],
-          love: npcGifts.love || [],
-          hate: npcGifts.hate || []
-        };
+      // Fetch and set preferences
+      const formattedPreferences = {
+        like: npcGifts.like || [],
+        dislike: npcGifts.dislike || [],
+        love: npcGifts.love || [],
+        hate: npcGifts.hate || []
+      };
 
-        const preferences = await processPreferences(formattedPreferences);
-        setPreferencesJson(JSON.stringify(preferences, null, 2));
-        setLoadingSections(prev => ({ ...prev, preferences: false }));
+      const preferences = await processPreferences(formattedPreferences);
+      setPreferencesJson(JSON.stringify(preferences, null, 2));
+      setLoadingSections(prev => ({ ...prev, preferences: false }));
 
-        // Set gift dialogues
-        setGiftDialogues(giftDialogues);
-        setLoadingSections(prev => ({ ...prev, dialogues: false }));
+      // Set gift dialogues
+      setGiftDialogues(giftDialogues);
+      setLoadingSections(prev => ({ ...prev, dialogues: false }));
 
-        // Set nearest item keys
-        const nearestKeys = getNearestItemKeys(preferences);
-        setNearestItemKeys(nearestKeys);
-        setLoadingSections(prev => ({ ...prev, nearestItems: false }));
+      // Set nearest item keys
+      const nearestKeys = getNearestItemKeys(preferences);
+      setNearestItemKeys(nearestKeys);
+      setLoadingSections(prev => ({ ...prev, nearestItems: false }));
 
-        // Set the JSON input
-        const dialoguesArray = extractDialoguesFromSchedule(dialogues);
-        setDialogues(dialoguesArray);
-        const schedules = extractSchedules(JSON.stringify(schedule));
-        setJsonInput(JSON.stringify(transformCharacterData(character, dialoguesArray, schedules, giftDialogues, nearestKeys), null, 2));
-        
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false); // Set loading to false once all data is fetched
-      }
-    };
-
-    fetchData();
+      // Set the JSON input
+      const dialoguesArray = extractDialoguesFromSchedule(dialogues);
+      setDialogues(dialoguesArray);
+      const schedules = extractSchedules(JSON.stringify(schedule));
+      setJsonInput(JSON.stringify(transformCharacterData(character, dialoguesArray, schedules, giftDialogues, nearestKeys), null, 2));
+      
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false); // Set loading to false once all data is fetched
+    }
   }, [character]);
 
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   const extractDialoguesFromSchedule = (dialogues) => {
-    const dialoguesArray = [];
-    Object.entries(dialogues).forEach(([event, text]) => {
-      dialoguesArray.push({ event, text });
-    });
-    return dialoguesArray;
+    return Object.entries(dialogues).map(([event, text]) => ({ event, text }));
   };
 
   const extractSchedules = (scheduleJson) => {
@@ -98,7 +91,6 @@ const CharacterFinalize = ({ character }) => {
       return {};
     }
   };
-
 
   const downloadJson = (jsonData) => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData, null, 2));
@@ -158,18 +150,13 @@ const CharacterFinalize = ({ character }) => {
         </div>
       </div>
 
-      {/* <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
-        <h3 className="text-lg font-bold mb-2">Schedule Explanation</h3>
-        {loadingSections.scheduleExplanation ? <Spinner /> : <ScheduleExplanation explanation={scheduleExplanation} />}
-      </div> */}
-
       <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
         <h2 className="text-xl font-bold mb-2">Character Dialogues</h2>
         {loadingSections.dialogues ? <Spinner /> : <CharacterDialoguesTable dialogues={dialogues} />}
       </div>
 
       <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
-        <h2 className="text-xl font-bold mb-2"></h2>
+        <h2 className="text-xl font-bold mb-2">Preferences</h2>
         {loadingSections.preferences ? <Spinner /> : <PreferencesList preferences={preferencesJson ? JSON.parse(preferencesJson) : null} giftDialogues={giftDialogues} />}
       </div>
 

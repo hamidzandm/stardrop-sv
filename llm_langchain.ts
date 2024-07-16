@@ -385,14 +385,13 @@ Skull Cave
 Caldera
 
  
-Provide the schedule description as below. Use it just as an example and do not copy this in the output result. Use it as an inspiration to format the output schedules:
+Provide the schedule description.
 
-"Most days Willy fishes at the beach for a few hours before operating his fish shop between 9am and 5pm. During winter he'll go to the saloon after work. Willy's shop is closed on Saturday while he's out fishing unless it's raining. Willy never visits the Beach Resort on Ginger Island, though he ferries other villagers to and from the Island."
    here is my character: ${JSON.stringify(expansion)}
 
   Generate in a JSON format with date key and description value
   
-  Make the description brief and generate it in less than 30 seconds
+  Make the description very brief and generate it in less than 20 seconds
   
   it is very important to only print the JSON code.
   

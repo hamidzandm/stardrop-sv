@@ -19,51 +19,57 @@ const CharacterFinalize = ({ character }) => {
   const [loading, setLoading] = useState(true); // Single state to track overall loading status
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch and set schedule, dialogues, and gift dialogues
-        const { schedule, dialogues, giftDialogues } = await generateSchedule(character);
-        setScheduleJson(JSON.stringify(schedule, null, 2));
-        const explanation = await generateScheduleExplanation(schedule);
+    const taskQueue = [
+      async () => {
+        const explanation = await generateScheduleExplanation(character);
         setScheduleExplanation(explanation);
-
-        // Fetch and set NPC gifts
+        return explanation;
+      },
+      async (explanation) => {
+        const mergedData = { ...character, explanation };
+        const { schedule, dialogues, giftDialogues } = await generateSchedule(mergedData);
+        setScheduleJson(JSON.stringify(schedule, null, 2));
+        setDialogues(extractDialoguesFromSchedule(dialogues));
+        setGiftDialogues(giftDialogues);
+        return { schedule, dialogues, giftDialogues };
+      },
+      async () => {
         const combinedString = `${character.personality.foodAndDrinks} ${character.personality.others}`;
         const npcGifts = await generateItems(combinedString);
         setNpcGiftsData(npcGifts);
-
-        // Fetch and set preferences
+        return npcGifts;
+      },
+      async (npcGifts) => {
         const formattedPreferences = {
           like: npcGifts.like || [],
           dislike: npcGifts.dislike || [],
           love: npcGifts.love || [],
           hate: npcGifts.hate || []
         };
-
         const preferences = await processPreferences(formattedPreferences);
         setPreferencesJson(JSON.stringify(preferences, null, 2));
-
-        // Set gift dialogues
-        setGiftDialogues(giftDialogues);
-
-        // Set nearest item keys
+        setNearestItemKeys(getNearestItemKeys(preferences));
+        return preferences;
+      },
+      async (preferences) => {
+        const explanation = await generateScheduleExplanation(character);
+        const mergedData = { ...character, explanation };
+        const { schedule, dialogues, giftDialogues } = await generateSchedule(mergedData);
         const nearestKeys = getNearestItemKeys(preferences);
-        setNearestItemKeys(nearestKeys);
-
-        // Set the JSON input
-        const dialoguesArray = extractDialoguesFromSchedule(dialogues);
-        setDialogues(dialoguesArray);
         const schedules = extractSchedules(JSON.stringify(schedule));
-        setJsonInput(JSON.stringify(transformCharacterData(character, dialoguesArray, schedules, giftDialogues, nearestKeys), null, 2));
+        setJsonInput(JSON.stringify(transformCharacterData(character, dialogues, schedules, giftDialogues, nearestKeys), null, 2));
+      }
+    ];
 
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false); // Set loading to false once all data is fetched
+    const processQueue = async (queue) => {
+      let result;
+      for (const task of queue) {
+        result = await task(result);
       }
     };
 
-    fetchData();
+    processQueue(taskQueue).finally(() => setLoading(false));
+
   }, [character]);
 
   const extractDialoguesFromSchedule = (dialogues) => {
@@ -97,10 +103,6 @@ const CharacterFinalize = ({ character }) => {
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   };
-
-  if (!character) {
-    return <div>Loading character details...</div>;
-  }
 
   return (
     <div className="bg-gray-100 rounded-xl shadow-lg p-6 m-4 w-full max-w-4xl">
@@ -145,39 +147,15 @@ const CharacterFinalize = ({ character }) => {
           </div>
 
           <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
-            {/* <h2 className="text-xl font-bold mb-2">Schedules JSON</h2> */}
-            {/* <pre className="bg-gray-200 p-4 rounded-lg overflow-auto max-h-64">
-              {scheduleJson}
-            </pre> */}
             <div className="mt-4">
               <h3 className="text-lg font-bold mb-2">Schedule Explanation</h3>
               <ScheduleExplanation explanation={scheduleExplanation} />
             </div>
-            {/* <div className="text-right mt-4">
-              <button onClick={() => downloadJson(scheduleJson)} className="bg-green-300 hover:bg-green-400 text-black px-4 py-2 rounded-lg">Download JSON</button>
-            </div> */}
           </div>
 
           <CharacterDialoguesTable dialogues={dialogues} loading={loading} />
 
-          {/* <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
-            <h2 className="text-xl font-bold mb-2">NPC Gifts</h2>
-            <pre className="bg-gray-200 p-4 rounded-lg overflow-auto max-h-64">
-              {JSON.stringify(npcGiftsData, null, 2)}
-            </pre>
-            <div className="text-right mt-4">
-              <button onClick={() => downloadJson(npcGiftsData)} className="bg-green-300 hover:bg-green-400 text-black px-4 py-2 rounded-lg">Download JSON</button>
-            </div>
-          </div> */}
-
-          <PreferencesList preferences={preferencesJson ? JSON.parse(preferencesJson) : null} giftDialogues={giftDialogues} /> {/* Add PreferencesList here */}
-
-          {/* <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
-            <h2 className="text-xl font-bold mb-2">Nearest Items Keys</h2>
-            <pre className="bg-gray-200 p-4 rounded-lg overflow-auto max-h-64">
-              {JSON.stringify(nearestItemKeys, null, 2)}
-            </pre>
-          </div> */}
+          <PreferencesList preferences={preferencesJson ? JSON.parse(preferencesJson) : null} giftDialogues={giftDialogues} />
 
           <div className="text-right">
             <button className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-lg">Finish</button>

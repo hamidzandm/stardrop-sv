@@ -4,13 +4,14 @@ import CharacterDialoguesTable from './CharacterDialoguesTable';
 import ScheduleExplanation from './ScheduleExplanation';
 import PreferencesList from './PreferencesList';
 import Spinner from './Spinner'; 
-import { generateSchedule, generateItems, processPreferences } from '@/llm_langchain';
+import { generateSchedule, generateScheduleExplanation, generateItems, processPreferences } from '@/llm_langchain';
 import getNearestItemKeys from '@/utils/getNearestItemsKeys'; 
 
 const CharacterFinalize = ({ character }) => {
   const [jsonInput, setJsonInput] = useState('');
   const [scheduleJson, setScheduleJson] = useState('');
   const [preferencesJson, setPreferencesJson] = useState('');
+  const [scheduleExplanation, setScheduleExplanation] = useState(''); // State for storing schedule explanation
   const [npcGiftsData, setNpcGiftsData] = useState(null);
   const [dialogues, setDialogues] = useState([]);
   const [giftDialogues, setGiftDialogues] = useState({});
@@ -18,6 +19,7 @@ const CharacterFinalize = ({ character }) => {
   const [loading, setLoading] = useState(true);
   const [loadingSections, setLoadingSections] = useState({
     schedule: true,
+    scheduleExplanation: true,
     npcGifts: true,
     preferences: true,
     dialogues: true,
@@ -33,6 +35,10 @@ const CharacterFinalize = ({ character }) => {
       const { schedule, dialogues, giftDialogues } = await generateSchedule(character);
       setScheduleJson(JSON.stringify(schedule, null, 2));
       setLoadingSections(prev => ({ ...prev, schedule: false }));
+
+      const explanation = await generateScheduleExplanation(schedule);
+      setScheduleExplanation(explanation);
+      setLoadingSections(prev => ({ ...prev, scheduleExplanation: false }));
 
       // Fetch and set NPC gifts
       const combinedString = `${character.personality.foodAndDrinks} ${character.personality.others}`;
@@ -148,6 +154,11 @@ const CharacterFinalize = ({ character }) => {
         <div className="text-right mt-4">
           <button onClick={() => downloadJson(jsonInput)} className="bg-green-300 hover:bg-green-400 text-black px-4 py-2 rounded-lg">Download JSON</button>
         </div>
+      </div>
+
+      <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
+        <h3 className="text-lg font-bold mb-2">Schedule Explanation</h3>
+        {loadingSections.scheduleExplanation ? <Spinner /> : <ScheduleExplanation explanation={scheduleExplanation} />}
       </div>
 
       <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">

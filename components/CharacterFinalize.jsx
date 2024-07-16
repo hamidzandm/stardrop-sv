@@ -34,9 +34,9 @@ const CharacterFinalize = ({ character }) => {
         setScheduleJson(JSON.stringify(schedule, null, 2));
         setLoadingSections(prev => ({ ...prev, schedule: false }));
 
-        const explanation = await generateScheduleExplanation(schedule);
-        setScheduleExplanation(explanation);
-        setLoadingSections(prev => ({ ...prev, scheduleExplanation: false }));
+        // const explanation = await generateScheduleExplanation(schedule);
+        // setScheduleExplanation(explanation);
+        // setLoadingSections(prev => ({ ...prev, scheduleExplanation: false }));
 
         // Fetch and set NPC gifts
         const combinedString = `${character.personality.foodAndDrinks} ${character.personality.others}`;
@@ -158,10 +158,10 @@ const CharacterFinalize = ({ character }) => {
         </div>
       </div>
 
-      <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
+      {/* <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
         <h3 className="text-lg font-bold mb-2">Schedule Explanation</h3>
         {loadingSections.scheduleExplanation ? <Spinner /> : <ScheduleExplanation explanation={scheduleExplanation} />}
-      </div>
+      </div> */}
 
       <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
         <h2 className="text-xl font-bold mb-2">Character Dialogues</h2>

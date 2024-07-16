@@ -412,7 +412,7 @@ export async function generateScheduleExplanation(expansion) {
 
   Generate in a JSON format with date key and description value
   
-  Make the description brief and generate it in less than 30 seconds
+  Make the description very brief and generate it in less than 30 seconds
   
   it us very important to only print the JSON code.
   

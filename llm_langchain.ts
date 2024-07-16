@@ -245,9 +245,6 @@ export async function generateSchedule(expansion) {
   BathHouse_MensLocker 5 6 2
   BugLand 36 49 2
   BugLand 25 41 2
-  WitchSwamp 20 23 2
-  WitchHut 7 7 2
-  WitchHut 4 5 2
   WizardHouse 8 6 2
   WizardHouse 10 14 2
   WizardHouse 8 20 2
@@ -257,16 +254,7 @@ export async function generateSchedule(expansion) {
   Desert 15 42 2
   Desert 46 48 2
   Desert 44 54 2
-  SandyHouse 8 4 2
   SkullCave 8 5 2
-  IslandWest 77 40 2
-  IslandWest 74 10 2
-  IslandEast 21 31 2
-  IslandEast 13 36 2
-  IslandSouth 11 14 2
-  IslandSouth 34 29 2
-  IslandHut 7 8 2
-  IslandFieldOffice 4 4 2
   Caldera 23 24 2
 
   only print schedules and dialogues and make sure to name the schedules key to "schedule" and dialogues key to "dialogues"
@@ -369,52 +357,44 @@ export async function generateScheduleExplanation(expansion) {
   const prompt = `
   Generate a plan in natural language based on the description of the character and the following locations within the Stardew Valley game. The plan should include schedules for the whole week (from Monday to Sunday), detailing activities for a complete day. 
 
-  Ensure the descriptions reflect the character's personality.
-  
-  The locations should be reflected on the character locations and can be selected from the following list of locations in natural language:
-  
-  Mine
-  Science House
-  Pierre's Shop
-  Blacksmith
-  Town
-  Joja Mart
-  Archaeology House
-  Stardrop Saloon
-  Sewer
-  Forest
-  Mastery Cave
-  Animal Shop
-  Woods
-  Mountain
-  Bath House Entry
-  Bath House Mens Locker
-  Bug Land
-  Witch Swamp
-  Witch Hut
-  Wizard House
-  Beach
-  Desert
-  Sandy House
-  Skull Cave
-  Island West
-  Island East
-  Island South
-  Island Hut
-  Island Field Office
-  Caldera
-  
-   
-  Provide the schedule description as below. Use it just as an example and do not copy this in the output result. Use it as an inspiration to format the output schedules:
-  
-  "Most days Willy fishes at the beach for a few hours before operating his fish shop between 9am and 5pm. During winter he'll go to the saloon after work. Willy's shop is closed on Saturday while he's out fishing unless it's raining. Willy never visits the Beach Resort on Ginger Island, though he ferries other villagers to and from the Island."
+Ensure the descriptions reflect the character's personality.
+
+The locations should be reflected on the character locations and can be selected from the following list of locations in natural language:
+
+Mine
+Science House
+Pierre's Shop
+Blacksmith
+Town
+Joja Mart
+Archaeology House
+Stardrop Saloon
+Sewer
+Forest
+Mastery Cave
+Animal Shop
+Woods
+Mountain
+Bath House Entry
+Bath House Mens Locker
+Bug Land
+Wizard House
+Beach
+Desert
+Skull Cave
+Caldera
+
+ 
+Provide the schedule description as below. Use it just as an example and do not copy this in the output result. Use it as an inspiration to format the output schedules:
+
+"Most days Willy fishes at the beach for a few hours before operating his fish shop between 9am and 5pm. During winter he'll go to the saloon after work. Willy's shop is closed on Saturday while he's out fishing unless it's raining. Willy never visits the Beach Resort on Ginger Island, though he ferries other villagers to and from the Island."
    here is my character: ${JSON.stringify(expansion)}
 
   Generate in a JSON format with date key and description value
   
-  Make the description very brief and generate it in less than 30 seconds
+  Make the description brief and generate it in less than 30 seconds
   
-  it us very important to only print the JSON code.
+  it is very important to only print the JSON code.
   
   do not ever put \`\`\`json\`\`\` in the result
 

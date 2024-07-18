@@ -183,7 +183,7 @@ export async function generateSchedule(expansion) {
   Do not use the information form the example.
   Generate same schedules for Monday, Wednesday, and Friday.
   Generate different schedules for Tuesday and Thursday.
-  Generate schedules for Saturday and Sunday to take some rest. All the schedules for the days must follow the same pattern.
+  Generate schedules for Saturday and Sunday to take some rest. use AnimalShop 5 14 3 for home of the NPC. All the schedules for the days must follow the same pattern.
   For the dialogues, use the key format: <location><x><y>, and example such as Mountain_47_23: 'I come here for the peace and quiet.'
   Provide NPC's schedule for different times, day of the week, including the location and coordinates, and create dialogues based on their location and coordinates at specific times. The schedule should include different activities for specific days of the week. The activities should be realistic and varied, reflecting different times of day and locations within Stardew Valley. It is very important to include location and co-ordinates only from the following list:
   
@@ -404,7 +404,7 @@ Provide the schedule description for morning, afternoon, and evening. Provide th
 };
   `;
 
-  const response = await chatModel.invoke([["system", "You are a helpful assistant."], prompt]);
+  const response = await chatModel2.invoke([["system", "You are a helpful assistant."], prompt]);
   console.log(response.content);
 
   return response.content;

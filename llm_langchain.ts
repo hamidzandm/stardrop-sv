@@ -9,7 +9,7 @@ const chatModel = new ChatOpenAI({
 
 const chatModel2 = new ChatOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  modelName: 'gpt-4-turbo',
+  modelName: 'gpt-4o',
   
 })
 
@@ -401,7 +401,7 @@ Provide the schedule description.
 };
   `;
 
-  const response = await chatModel2.invoke([["system", "You are a helpful assistant."], prompt]);
+  const response = await chatModel.invoke([["system", "You are a helpful assistant."], prompt]);
   console.log(response.content);
 
   return response.content;
@@ -414,7 +414,7 @@ export async function generateDescription(highlights) {
 
   `;
 
-  const response = await chatModel2.invoke([["system", "You are a helpful assistant."], prompt]);
+  const response = await chatModel.invoke([["system", "You are a helpful assistant."], prompt]);
   console.log(response.content);
 
   return response.content;

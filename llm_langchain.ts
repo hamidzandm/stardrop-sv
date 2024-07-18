@@ -385,13 +385,13 @@ Skull Cave
 Caldera
 
  
-Provide the schedule description.
+Provide the schedule description for morning, afternoon, and evening.
 
    here is my character: ${JSON.stringify(expansion)}
 
   Generate in a JSON format with date key and description value
   
-  Make the description very brief and generate it in less than 20 seconds
+  Make the description brief and generate it in less than 20 seconds
   
   it is very important to only print the JSON code.
   

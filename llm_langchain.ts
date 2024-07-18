@@ -359,7 +359,7 @@ export async function generateScheduleExplanation(expansion) {
 
 Ensure the descriptions reflect the character's personality.
 
-The locations should be reflected on the character locations and can be selected from the following list of locations in natural language:
+The locations should be reflected on the character locations and must be selected from the following list of locations in natural language:
 
 Mine
 Science House
@@ -385,11 +385,14 @@ Skull Cave
 Caldera
 
  
-Provide the schedule description for morning, afternoon, and evening.
+Provide the schedule description for morning, afternoon, and evening. Provide the schedule description as below. Use it just as an example and do not copy this in the output result. Use it as an inspiration to format the output schedules:
+
+"Most days Willy fishes at the beach for a few hours before operating his fish shop between 9am and 5pm. During winter he'll go to the saloon after work. Willy's shop is closed on Saturday while he's out fishing unless it's raining. Willy never visits the Beach Resort on Ginger Island, though he ferries other villagers to and from the Island."
+
 
    here is my character: ${JSON.stringify(expansion)}
 
-  Generate in a JSON format with date key and description value
+  Generate in a JSON format with a date key and a description value. description value must be look like a sequence string
   
   Make the description brief and generate it in less than 20 seconds
   

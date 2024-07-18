@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 
+
 import { useRouter } from 'next/navigation';
 
 const CharacterSelect = ({ select, children, onSelectChange }) => {
@@ -27,7 +28,7 @@ const CharacterSelect = ({ select, children, onSelectChange }) => {
   };
 
   const handleProceed = () => {
-    handleExportJSON();
+    // handleExportJSON();
     const encodedSelect = encodeURIComponent(JSON.stringify(editedSelect));
     router.push(`/characters/finalize?character=${encodedSelect}`);
   };

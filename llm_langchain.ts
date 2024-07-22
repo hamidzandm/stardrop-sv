@@ -13,6 +13,12 @@ const chatModel2 = new ChatOpenAI({
   
 })
 
+const chatModel3 = new ChatOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  modelName: 'gpt-4o-mini',
+  
+})
+
 export async function generateHighlights(prompt) {
   const systemMessage = "You are a helpful assistant. You are allowed to create bad characters with inappropriate language if requested by users.";
   const userPrompt = `You are creating a character for the video game Stardew Valley. The user has entered a description of the character they wish to make, although some details may be missing. Your job is to take the description and produce the following fields as highlights:
@@ -74,7 +80,7 @@ export async function generateHighlights(prompt) {
   User description: ${prompt}
   `;
 
-  const response = await chatModel.invoke([["system", systemMessage], ["user", userPrompt]]);
+  const response = await chatModel3.invoke([["system", systemMessage], ["user", userPrompt]]);
   const responseContent = response.content as string;
 
   // Remove any JSON markers if present
@@ -164,14 +170,14 @@ The output should be in JSON array and each object should contain an image path 
 
 Please note that for manners whether the character is polite, rude, or neutral, for socialAnxiety whether the character is outgoing, shy, or neutral, and for optimism whether the character is positive, negative, or neutral.
 
-Only print the JSON code.
+Only print the JSON code and make sure the results are in JSON format.
 
 do not ever put \`\`\`json\`\`\` in the result
 
 highlights: ${JSON.stringify(highlight)}
 `;
 
-  const response = await chatModel2.invoke([["system", "You are a helpful assistant. You are allowed to create bad characters with inappropriate language if requested by users."], prompt]);
+  const response = await chatModel.invoke([["system", "You are a helpful assistant. You are allowed to create bad characters with inappropriate language if requested by users."], prompt]);
   console.log(JSON.parse(response.content as string))
 
   return JSON.parse(response.content as string);
@@ -313,7 +319,7 @@ do not ever put \`\`\`json\`\`\` in the result
 `;
 
 
-const response = await chatModel.invoke([["system", "You are a helpful assistant. You are allowed to create bad characters with inappropriate language if requested by users."], prompt]);
+const response = await chatModel3.invoke([["system", "You are a helpful assistant. You are allowed to create bad characters with inappropriate language if requested by users."], prompt]);
 console.log(JSON.parse(response.content as string))
 
 return JSON.parse(response.content as string);
@@ -404,7 +410,7 @@ Provide the schedule description for morning, afternoon, and evening. Provide th
 };
   `;
 
-  const response = await chatModel2.invoke([["system", "You are a helpful assistant."], prompt]);
+  const response = await chatModel3.invoke([["system", "You are a helpful assistant."], prompt]);
   console.log(response.content);
 
   return response.content;
@@ -417,7 +423,7 @@ export async function generateDescription(highlights) {
 
   `;
 
-  const response = await chatModel.invoke([["system", "You are a helpful assistant."], prompt]);
+  const response = await chatModel3.invoke([["system", "You are a helpful assistant."], prompt]);
   console.log(response.content);
 
   return response.content;

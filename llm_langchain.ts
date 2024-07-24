@@ -400,7 +400,7 @@ Provide the schedule description for morning, afternoon, and evening. Provide th
 
   Generate in a JSON format with a date key and a description value. description value must be look like a sequence string
   
-  Make the description brief and generate it in less than 20 seconds
+  Generate it in less than 20 seconds
   
   it is very important to only print the JSON code.
   
@@ -415,6 +415,70 @@ Provide the schedule description for morning, afternoon, and evening. Provide th
 
   return response.content;
 }
+
+export async function generateScheduleExplanation2(expansion) {
+  const prompt = `
+  Summerize the schedule in Stardew valley game and generate a plan in natural language based on the description of the character and the following locations within the Stardew Valley game. The plan should include schedules for the whole week (from Monday to Sunday), detailing activities for a complete day. 
+
+Ensure the descriptions reflect the character's personality.
+
+The locations should be reflected on the character locations and must be selected from the following list of locations in natural language:
+
+Mine
+Science House
+Pierre's Shop
+Blacksmith
+Town
+Joja Mart
+Archaeology House
+Stardrop Saloon
+Sewer
+Forest
+Mastery Cave
+Animal Shop
+Woods
+Mountain
+Bath House Entry
+Bath House Mens Locker
+Bug Land
+Wizard House
+Beach
+Desert
+Skull Cave
+Caldera
+
+ 
+Provide the schedule description for morning, afternoon, and evening. Provide the schedule description as below. Use it just as an example and do not copy this in the output result. Use it as an inspiration to format the output schedules:
+
+Here is an example for Monday:
+
+Monday
+At 9 AM, I head to Pierre's Shop to restock on seeds and check what's new. By noon, I plan to meet friends at the Stardrop Saloon for a nice lunch and to catch up. Afterward, around 3 PM, a visit to the Blacksmith is in order to upgrade my tools. I will finish my day by wandering around Town from 5 PM until dusk, enjoying the evening atmosphere and greeting fellow villagers. Later, I'll return to the Seed Shop to prepare for the week ahead.
+
+
+   here is my character: ${JSON.stringify(expansion)}
+
+  Generate in a JSON format with a date key and a description value. description value must be look like a sequence string
+  
+  Generate it in less than 20 seconds
+  
+  it is very important to only print the JSON code.
+  
+  do not ever put \`\`\`json\`\`\` in the result
+
+
+};
+  `;
+
+  const response = await chatModel3.invoke([["system", "You are a helpful assistant."], prompt]);
+  console.log(response.content);
+
+  return response.content;
+}
+
+
+
+
 
 export async function generateDescription(highlights) {
   const prompt = `

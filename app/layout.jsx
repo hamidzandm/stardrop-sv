@@ -4,8 +4,8 @@ import Navbar from '@/components/Navbar';
 import AuthProvider from '@/components/AuthProvider';
 
 export const metadata = {
-    title: 'Stardew Valley AI',
-    description: 'AI tool to add character to the Stardew Valley game'
+    title: 'Stardrop',
+    description: 'Help you to create character for the Stardew Valley game'
 }
 const MainLayout = ({children}) => {
   return (

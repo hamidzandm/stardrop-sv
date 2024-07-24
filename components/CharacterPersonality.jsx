@@ -116,51 +116,81 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
           <Tooltip text="This attribute determines the level of politeness and respect an NPC shows in their interactions. Higher manners result in more courteous and considerate dialogue, while lower manners can lead to blunt or rude behavior." />
         </label>
         {isEditing ? (
-          <select
-            className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-            value={editedPersonality.manners}
-            onChange={(e) => handlePersonalityChange('manners', e.target.value)}
-          >
-            <option value="Polite">Polite</option>
-            <option value="Rude">Rude</option>
-            <option value="Neutral">Neutral</option>
-          </select>
+          <>
+            <select
+              className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              value={editedPersonality.manners}
+              onChange={(e) => handlePersonalityChange('manners', e.target.value)}
+            >
+              <option value="Polite">Polite</option>
+              <option value="Rude">Rude</option>
+              <option value="Neutral">Neutral</option>
+            </select>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              value={editedPersonality.mannersDescription}
+              onChange={(e) => handlePersonalityChange('mannersDescription', e.target.value)}
+            />
+          </>
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.manners}</p>
+          <>
+            <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.manners}</p>
+            <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.mannersDescription}</p>
+          </>
         )}
         <label className="block text-sm font-bold text-gray-700 flex items-center">
           Social Anxiety: 
           <Tooltip text="This attribute indicates the level of shyness or introversion an NPC experiences. NPCs with high social anxiety may be less likely to initiate conversations, attend events, or interact with other characters. They might also have dialogue that reflects their discomfort in social situations." />
         </label>
         {isEditing ? (
-          <select
-            className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-            value={editedPersonality.socialAnxiety}
-            onChange={(e) => handlePersonalityChange('socialAnxiety', e.target.value)}
-          >
-            <option value="Outgoing">Outgoing</option>
-            <option value="Neutral">Neutral</option>
-            <option value="Shy">Shy</option>
-          </select>
+          <>
+            <select
+              className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              value={editedPersonality.socialAnxiety}
+              onChange={(e) => handlePersonalityChange('socialAnxiety', e.target.value)}
+            >
+              <option value="Outgoing">Outgoing</option>
+              <option value="Neutral">Neutral</option>
+              <option value="Shy">Shy</option>
+            </select>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              value={editedPersonality.socialAnxietyDescription}
+              onChange={(e) => handlePersonalityChange('socialAnxietyDescription', e.target.value)}
+            />
+          </>
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.socialAnxiety}</p>
+          <>
+            <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.socialAnxiety}</p>
+            <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.socialAnxietyDescription}</p>
+          </>
         )}
         <label className="block text-sm font-bold text-gray-700 flex items-center">
           Optimism: 
           <Tooltip text="This attribute reflects the NPC's general outlook on life. High optimism leads to positive, upbeat dialogue and a tendency to see the bright side of situations. Low optimism can result in more pessimistic or downbeat responses." />
         </label>
         {isEditing ? (
-          <select
-            className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-            value={editedPersonality.optimism}
-            onChange={(e) => handlePersonalityChange('optimism', e.target.value)}
-          >
-            <option value="Negative">Negative</option>
-            <option value="Neutral">Neutral</option>
-            <option value="Positive">Positive</option>
-          </select>
+          <>
+            <select
+              className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              value={editedPersonality.optimism}
+              onChange={(e) => handlePersonalityChange('optimism', e.target.value)}
+            >
+              <option value="Negative">Negative</option>
+              <option value="Neutral">Neutral</option>
+              <option value="Positive">Positive</option>
+            </select>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              value={editedPersonality.optimismDescription}
+              onChange={(e) => handlePersonalityChange('optimismDescription', e.target.value)}
+            />
+          </>
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.optimism}</p>
+          <>
+            <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.optimism}</p>
+            <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.optimismDescription}</p>
+          </>
         )}
       </div>
     </div>

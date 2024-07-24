@@ -132,14 +132,14 @@ const CharacterFinalize = ({ character }) => {
 
   const downloadAllAsZip = async () => {
     const zip = new JSZip();
-    zip.file(`${character?.name}-content.json`, jsonInput);
-    zip.file(`${character?.name}-schedule.json`, scheduleJson);
+    zip.file("content.json", jsonInput);
+    zip.file("schedule.json", scheduleJson);
 
     const dialoguesJson = dialogues.reduce((acc, { event, text }) => {
       acc[event] = text;
       return acc;
     }, {});
-    zip.file(`${character?.name}-dialogues.json`, JSON.stringify(dialoguesJson, null, 2));
+    zip.file("dialogues.json", JSON.stringify(dialoguesJson, null, 2));
 
     const assetPath = character.gender === 'Female' ? 'female_assets/' : 'male_assets/';
     const assetFiles = character.gender === 'Female' 

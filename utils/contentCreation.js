@@ -115,7 +115,9 @@ export function transformCharacterData(character, dialogues, schedules, giftDial
       {
         "Action": "EditData",
         "Target": "Data/NPCGiftTastes",
-        "Entries": `${giftDialogues.love}/${loveKeys}/${giftDialogues.like}/${likeKeys}/${giftDialogues.dislike}/${dislikeKeys}/${giftDialogues.hate}/${hateKeys}/${giftDialogues.neutral}/`
+        "Entries": {
+          [character.name] :`${giftDialogues.love}/${loveKeys}/${giftDialogues.like}/${likeKeys}/${giftDialogues.dislike}/${dislikeKeys}/${giftDialogues.hate}/${hateKeys}/${giftDialogues.neutral}/`
+        }
       }
     ]
   };

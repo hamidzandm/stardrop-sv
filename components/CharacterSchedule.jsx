@@ -7,7 +7,7 @@ const CharacterSchedule = ({ schedules = [], onSchedulesChange }) => {
   useEffect(() => {
     setEditedSchedules(schedules);
   }, [schedules]);
-  
+
   const handleEditClick = () => {
     setIsEditing(true);
   };
@@ -36,9 +36,9 @@ const CharacterSchedule = ({ schedules = [], onSchedulesChange }) => {
       </div>
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 overflow-y-auto h-64">
         {isEditing ? (
-          <ul className="list-disc list-inside space-y-2">
+          <div className="space-y-2">
             {editedSchedules.map((item, index) => (
-              <li key={index}>
+              <div key={index} className="mb-4">
                 <input
                   type="text"
                   value={item.title}
@@ -52,20 +52,20 @@ const CharacterSchedule = ({ schedules = [], onSchedulesChange }) => {
                   className="w-full p-2 border border-gray-300 rounded-lg"
                   placeholder="Description"
                 />
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <ul className="list-disc list-inside space-y-2">
+          <div className="space-y-2">
             {schedules.map((item, index) => (
-              <li key={index} className="mb-4">
+              <div key={index} className="mb-4">
                 <h3 className="text-lg font-semibold">{item.title}:</h3>
                 <p className="text-black pl-4">
                   {item.description}
                 </p>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

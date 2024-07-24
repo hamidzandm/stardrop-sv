@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { transformCharacterData } from '../utils/contentCreation';
 import CharacterDialoguesTable from './CharacterDialoguesTable';
 import ScheduleExplanation from './ScheduleExplanation';
 import PreferencesList from './PreferencesList';
-import Spinner from './Spinner'; 
+import Spinner from './Spinner';
+import JSZip from 'jszip';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { generateSchedule, generateScheduleExplanation, generateItems, processPreferences } from '@/llm_langchain';
-import getNearestItemKeys from '@/utils/getNearestItemsKeys'; 
+import getNearestItemKeys from '@/utils/getNearestItemsKeys';
 
 const CharacterFinalize = ({ character }) => {
   const [jsonInput, setJsonInput] = useState('');
@@ -25,6 +28,7 @@ const CharacterFinalize = ({ character }) => {
     dialogues: true,
     nearestItems: true,
   });
+  const pageRef = useRef();
 
   const fetchData = useCallback(async () => {
     if (!character) return;
@@ -33,12 +37,14 @@ const CharacterFinalize = ({ character }) => {
     try {
       // Fetch schedule explanation and merge with character
       const explanation = await generateScheduleExplanation(character);
-      setScheduleExplanation(explanation);
       const characterWithExplanation = { ...character, scheduleExplanation: explanation };
       setLoadingSections(prev => ({ ...prev, scheduleExplanation: false }));
 
       // Fetch and set schedule, dialogues, and gift dialogues
       const { schedule, dialogues, giftDialogues } = await generateSchedule(characterWithExplanation);
+      const explanation2 = await generateScheduleExplanation(schedule);
+      setScheduleExplanation(explanation2);
+
       setScheduleJson(JSON.stringify(schedule, null, 2));
       setLoadingSections(prev => ({ ...prev, schedule: false }));
 
@@ -100,14 +106,87 @@ const CharacterFinalize = ({ character }) => {
     }
   };
 
-  const downloadJson = (jsonData) => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonData, null, 2));
+  const downloadJson = (jsonData, fileName) => {
+    // Properly format JSON string
+    const formattedJson = JSON.stringify(JSON.parse(jsonData), null, 2);
+
+    // Encode the JSON string
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(formattedJson);
+
+    // Create and trigger the download
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `${character?.name}.json`);
+    downloadAnchorNode.setAttribute("download", fileName);
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  };
+
+  const downloadDialoguesJson = (dialoguesData) => {
+    const dialoguesJson = dialoguesData.reduce((acc, { event, text }) => {
+      acc[event] = text;
+      return acc;
+    }, {});
+    downloadJson(JSON.stringify(dialoguesJson, null, 2), `${character?.name}-dialogues.json`);
+  };
+
+  const downloadAllAsZip = async () => {
+    const zip = new JSZip();
+    zip.file(`${character?.name}-content.json`, jsonInput);
+    zip.file(`${character?.name}-schedule.json`, scheduleJson);
+
+    const dialoguesJson = dialogues.reduce((acc, { event, text }) => {
+      acc[event] = text;
+      return acc;
+    }, {});
+    zip.file(`${character?.name}-dialogues.json`, JSON.stringify(dialoguesJson, null, 2));
+
+    const assetPath = character.gender === 'Female' ? 'female_assets/' : 'male_assets/';
+    const assetFiles = character.gender === 'Female' 
+      ? ['f_portraits.png', 'f_sprites.png']
+      : ['m_portraits.png', 'm_sprites.png'];
+
+    for (const file of assetFiles) {
+      const response = await fetch(`${assetPath}${file}`);
+      const blob = await response.blob();
+      const newFileName = file.includes('portraits')
+        ? `${character.name}-Portrait.png`
+        : `${character.name}.png`;
+      zip.file(newFileName, blob);
+    }
+
+    // Generate manifest.json
+    const manifestJson = {
+      Name: character.name,
+      Author: "Hamid",
+      Version: "2.3.0",
+      Description: `Add ${character.name} Character`,
+      UniqueID: `Hamid.${character.name}`,
+      ContentPackFor: {
+        UniqueID: "Pathoschild.ContentPatcher"
+      }
+    };
+    zip.file('manifest.json', JSON.stringify(manifestJson, null, 2));
+
+    // Generate PDF
+    const pdfBlob = await generatePdfBlob();
+    zip.file(`${character?.name}-page.pdf`, pdfBlob);
+
+    const content = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(content);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${character?.name}-all-files.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const generatePdfBlob = async () => {
+    const canvas = await html2canvas(pageRef.current, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', [canvas.width * 0.264583, canvas.height * 0.264583]);
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width * 0.264583, canvas.height * 0.264583);
+    return pdf.output('blob');
   };
 
   if (!character) {
@@ -115,8 +194,10 @@ const CharacterFinalize = ({ character }) => {
   }
 
   return (
-    <div className="bg-gray-100 rounded-xl shadow-lg p-6 m-4 w-full max-w-4xl relative">
-      <h1 className="text-2xl font-bold mb-4">Your character is ready!</h1>
+    <div className="bg-gray-100 rounded-xl shadow-lg p-6 m-4 w-full max-w-4xl relative" ref={pageRef}>
+      <h1 className="text-2xl font-bold mb-4">
+        {loading ? 'Your character is being created...' : 'Your character is ready!'}
+      </h1>
 
       {loading && (
         <div className="absolute top-0 right-0 m-4">
@@ -126,7 +207,7 @@ const CharacterFinalize = ({ character }) => {
 
       <div className={`flex mb-4 ${loading ? 'opacity-50' : ''}`}>
         <div className="w-1/3">
-          <img src={'/images/characters/2_portrait.png'} alt={character.name} className="w-40 h-35 mr-4" />
+          <img src={character.gender === 'Female' ? '/images/f_sample.png' : '/images/m_sample.png'} alt={character.name} className="w-40 h-35 mr-4" />
           <div>
             <h2 className="text-xl font-bold">{character.name}</h2>
             <p className="text-sm">Age: {character.age}</p>
@@ -144,17 +225,6 @@ const CharacterFinalize = ({ character }) => {
               </li>
             ))}
           </ul>
-          <p>{character.description}</p>
-        </div>
-      </div>
-
-      <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
-        <h2 className="text-xl font-bold mb-2">Content.json File</h2>
-        <pre className="bg-gray-200 p-4 rounded-lg overflow-auto max-h-64">
-          {jsonInput}
-        </pre>
-        <div className="text-right mt-4">
-          <button onClick={() => downloadJson(jsonInput)} className="bg-green-300 hover:bg-green-400 text-black px-4 py-2 rounded-lg">Download JSON</button>
         </div>
       </div>
 
@@ -174,7 +244,7 @@ const CharacterFinalize = ({ character }) => {
       </div>
 
       <div className="text-right">
-        <button className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-lg">Finish</button>
+        <button onClick={downloadAllAsZip} className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-lg">Download Files</button>
       </div>
     </div>
   );

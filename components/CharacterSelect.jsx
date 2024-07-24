@@ -1,8 +1,7 @@
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
-
-
 import { useRouter } from 'next/navigation';
+import { FaLock, FaLockOpen, FaHome } from "react-icons/fa"; // Importing the icons
 
 const CharacterSelect = ({ select, children, onSelectChange }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -12,7 +11,6 @@ const CharacterSelect = ({ select, children, onSelectChange }) => {
   useEffect(() => {
     setEditedSelect(select);
   }, [select]);
-
 
   const handleExportJSON = () => {
     const dataStr = JSON.stringify(editedSelect, null, 2); // Pretty-print JSON
@@ -28,7 +26,6 @@ const CharacterSelect = ({ select, children, onSelectChange }) => {
   };
 
   const handleProceed = () => {
-    // handleExportJSON();
     const encodedSelect = encodeURIComponent(JSON.stringify(editedSelect));
     router.push(`/characters/finalize?character=${encodedSelect}`);
   };
@@ -60,7 +57,7 @@ const CharacterSelect = ({ select, children, onSelectChange }) => {
         <div className="w-1/3 bg-white rounded-lg shadow-md p-4">
           <div className="text-center mb-4">
             <div className="w-24 h-24 mb-2 mx-auto">
-              <img src={'/images/characters/2_portrait.png'} alt={select.name} className="rounded-full" />
+              <img src={select.gender === 'Female' ? '/images/f_sample.png' : '/images/m_sample.png'} alt={select.name} className="rounded-full" />
             </div>
             <button className="text-xl" onClick={isEditing ? handleSaveClick : handleEditClick}>
               {isEditing ? 'Save' : 'Edit'}
@@ -145,7 +142,7 @@ const CharacterSelect = ({ select, children, onSelectChange }) => {
                 <li key={index}>{highlight}</li>
               ))}
             </ul>
-            <p className="italic">“{select.description}”</p>
+            {/* <p className="italic">“{select.description}”</p> */}
           </div>
         </div>
 
@@ -157,16 +154,16 @@ const CharacterSelect = ({ select, children, onSelectChange }) => {
 
       {/* Footer with Actions */}
       <div className="flex justify-between items-center mt-4">
-        <button className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-lg">Back</button>
-        <div className="flex-grow mx-4">
-          <input
-            type="text"
-            placeholder="Edit your prompt: Larry is a photograph..."
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          />
+        <button className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-lg" onClick={() => router.back()}>Back</button>
+        <div className="flex items-center space-x-4">
+          <button
+            className="flex items-center bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-lg"
+            onClick={() => router.push('/characters/description')}
+          >
+            <FaHome className="mr-2" /> Back to Main
+          </button>
+          <button onClick={handleProceed} className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-lg">Proceed</button>
         </div>
-        <button className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-lg">Generate</button>
-        <button onClick={handleProceed} className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-lg ml-2">Proceed</button>
       </div>
     </div>
   );

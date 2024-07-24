@@ -38,7 +38,7 @@ const CharacterDescription = () => {
           id='description'
           name='description'
           className='border rounded w-full py-2 px-3'
-          maxLength='250'
+          minLength='250'
           rows='10'
           placeholder='Example: Larry is a photographer who’s recently divorced and now is looking for a fresh start. He found Stardew Valley through his friend Abigail and now he’s moving to Stardew Valley.'
           value={prompt}

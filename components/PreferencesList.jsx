@@ -1,32 +1,49 @@
 import React from 'react';
 
+const capitalize = (text) => {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+const deduplicate = (array) => {
+  return [...new Set(array.map(capitalize))];
+};
+
 const PreferencesList = ({ preferences, giftDialogues }) => {
   if (!preferences || !giftDialogues) return null;
 
   return (
-    <div className="mb-4 bg-gray-100 rounded-lg shadow-lg">
-      <div className="bg-white p-4 rounded-t-lg">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">Preferences</h2>
-      </div>
+    <div className="mb-4 bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="p-6">
-        {['like', 'love', 'dislike', 'hate'].map((key) => (
-          <div key={key} className="mb-6">
-            <h3 className={`text-xl font-semibold capitalize mb-2 text-${key === 'like' ? 'green-500' : key === 'love' ? 'red-500' : key === 'dislike' ? 'yellow-500' : 'gray-500'}`}>
-              {key}
+        {['love', 'like', 'dislike', 'hate'].map((key) => (
+          <div key={key} className="mb-8">
+            <h3 className={"text-2xl font-semibold capitalize mb-4 text-blue-500"}>
+              {key.charAt(0).toUpperCase() + key.slice(1)}
             </h3>
-            <ul className="list-disc list-inside ml-6 text-gray-700">
-              {preferences[key].map((item, index) => (
-                <li key={index} className="mb-2">
-                  <strong>{item.item}:</strong>
-                  <ul className="list-disc list-inside ml-4">
-                    {item.nearestItems.map((nearestItem, i) => (
-                      <li key={i} className="text-gray-600">{nearestItem}</li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-            <p className="italic text-gray-500 mt-2">Dialogue: {giftDialogues[key]}</p>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nearest Items</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {deduplicate(preferences[key].map(item => item.item)).map((item, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <ul className="list-disc list-inside">
+                          {deduplicate(preferences[key].find(p => p.item.toLowerCase() === item.toLowerCase()).nearestItems).map((nearestItem, i) => (
+                            <li key={i} className="text-gray-600">{nearestItem}</li>
+                          ))}
+                        </ul>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="italic text-gray-500 mt-4">Dialogue: {giftDialogues[key]}</p>
           </div>
         ))}
       </div>

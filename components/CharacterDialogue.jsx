@@ -33,24 +33,24 @@ const CharacterDialogue = ({ dialogues, onDialoguesChange }) => {
       </div>
       <div className="bg-white rounded-lg shadow-md p-4 mb-4 overflow-y-auto h-64">
         {isEditing ? (
-          <ul className="list-disc list-inside space-y-2">
+          <div className="space-y-2">
             {editedDialogues.map((dialogue, index) => (
-              <li key={index}>
+              <div key={index}>
                 <input
                   type="text"
                   value={dialogue}
                   onChange={(e) => handleDialogueChange(index, e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded-lg"
                 />
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <ul className="list-disc list-inside space-y-2">
+          <div className="space-y-2">
             {dialogues.map((dialogue, index) => (
-              <li key={index} className="italic">"{dialogue}"</li>
+              <div key={index} className="italic">"{dialogue}"</div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

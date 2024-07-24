@@ -1,6 +1,18 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 
+const Tooltip = ({ text }) => (
+  <div className="relative flex flex-col items-center group">
+    <span className="text-blue-500 cursor-pointer ml-1">?</span>
+    <div className="absolute bottom-0 flex flex-col items-center hidden mb-6 group-hover:flex">
+      <div className="w-64 p-2 text-xs leading-none text-white bg-gray-800 shadow-lg rounded-md z-10">
+        {text}
+      </div>
+      <div className="w-3 h-3 -mt-2 rotate-45 bg-gray-800"></div>
+    </div>
+  </div>
+);
+
 const CharacterPersonality = ({ personality, onPersonalityChange }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedPersonality, setEditedPersonality] = useState({ ...personality });
@@ -26,17 +38,19 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
   };
 
   return (
-    <div className="bg-gray-100 rounded-xl shadow-lg p-6 m-4 w-full max-w-4xl">
-      <h1 className="text-2xl font-bold mb-4">Personality</h1>
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={isEditing ? handleSaveClick : handleEditClick}>
-        {isEditing ? 'Save' : 'Edit'}
-      </button>
-      <p className="mb-4 py-4">
+    <div className="bg-white rounded-xl shadow-lg p-6 m-4 w-full max-w-4xl">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-3xl font-bold text-gray-800">Personality</h1>
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={isEditing ? handleSaveClick : handleEditClick}>
+          {isEditing ? 'Save' : 'Edit'}
+        </button>
+      </div>
+      <p className="mb-4 text-gray-600">
         In this section, you can define the details of your character’s personality. Each of these attributes could affect your character’s dialogues, schedules, and overall behavior.
       </p>
       <div className="mb-4">
-        <h2 className="text-xl font-bold">Characteristics</h2>
-        <p className="text-sm mb-4">Below you can describe the characteristics of your character.</p>
+        <h2 className="text-2xl font-semibold text-gray-700 mb-2">Characteristics</h2>
+        <p className="text-sm text-gray-500 mb-4">Below you can describe the characteristics of your character.</p>
         
         {isEditing ? (
           <textarea
@@ -46,9 +60,9 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
             onChange={(e) => handlePersonalityChange('characteristics', e.target.value)}
           />
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-2">{personality.characteristics}</p>
+          <p className="w-full p-2 border border-gray-300 rounded-lg mb-2 bg-gray-50">{personality.characteristics}</p>
         )}
-        <label className="block text-sm font-bold">Job:</label>
+        <label className="block text-sm font-bold text-gray-700">Job:</label>
         {isEditing ? (
           <input
             type="text"
@@ -57,9 +71,9 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
             onChange={(e) => handlePersonalityChange('job', e.target.value)}
           />
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.job}</p>
+          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.job}</p>
         )}
-        <label className="block text-sm font-bold">Hobbies:</label>
+        <label className="block text-sm font-bold text-gray-700">Hobbies:</label>
         {isEditing ? (
           <textarea
             className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -67,12 +81,12 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
             onChange={(e) => handlePersonalityChange('hobbies', e.target.value)}
           />
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.hobbies}</p>
+          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.hobbies}</p>
         )}
       </div>
       <div className="mb-4">
-        <h2 className="text-xl font-bold">Favorites</h2>
-        <label className="block text-sm font-bold">Food And Drinks:</label>
+        <h2 className="text-2xl font-semibold text-gray-700 mb-2">Favorites</h2>
+        <label className="block text-sm font-bold text-gray-700">Food And Drinks:</label>
         {isEditing ? (
           <textarea
             className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -81,9 +95,9 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
             onChange={(e) => handlePersonalityChange('foodAndDrinks', e.target.value)}
           />
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.foodAndDrinks}</p>
+          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.foodAndDrinks}</p>
         )}
-        <label className="block text-sm font-bold">Others:</label>
+        <label className="block text-sm font-bold text-gray-700">Others:</label>
         {isEditing ? (
           <textarea
             className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -92,12 +106,15 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
             onChange={(e) => handlePersonalityChange('others', e.target.value)}
           />
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.others}</p>
+          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.others}</p>
         )}
       </div>
       <div className="mb-4">
-        <h2 className="text-xl font-bold">Social Behaviors</h2>
-        <label className="block text-sm font-bold">Manners:</label>
+        <h2 className="text-2xl font-semibold text-gray-700 mb-2">Social Behaviors</h2>
+        <label className="block text-sm font-bold text-gray-700 flex items-center">
+          Manners: 
+          <Tooltip text="This attribute determines the level of politeness and respect an NPC shows in their interactions. Higher manners result in more courteous and considerate dialogue, while lower manners can lead to blunt or rude behavior." />
+        </label>
         {isEditing ? (
           <select
             className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -109,18 +126,12 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
             <option value="Neutral">Neutral</option>
           </select>
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.manners}</p>
+          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.manners}</p>
         )}
-        {isEditing ? (
-          <textarea
-            className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-            value={editedPersonality.mannersDescription}
-            onChange={(e) => handlePersonalityChange('mannersDescription', e.target.value)}
-          />
-        ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.mannersDescription}</p>
-        )}
-        <label className="block text-sm font-bold">Social Anxiety:</label>
+        <label className="block text-sm font-bold text-gray-700 flex items-center">
+          Social Anxiety: 
+          <Tooltip text="This attribute indicates the level of shyness or introversion an NPC experiences. NPCs with high social anxiety may be less likely to initiate conversations, attend events, or interact with other characters. They might also have dialogue that reflects their discomfort in social situations." />
+        </label>
         {isEditing ? (
           <select
             className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -132,18 +143,12 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
             <option value="Shy">Shy</option>
           </select>
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.socialAnxiety}</p>
+          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.socialAnxiety}</p>
         )}
-        {isEditing ? (
-          <textarea
-            className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-            value={editedPersonality.socialAnxietyDescription}
-            onChange={(e) => handlePersonalityChange('socialAnxietyDescription', e.target.value)}
-          />
-        ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.socialAnxietyDescription}</p>
-        )}
-        <label className="block text-sm font-bold">Optimism:</label>
+        <label className="block text-sm font-bold text-gray-700 flex items-center">
+          Optimism: 
+          <Tooltip text="This attribute reflects the NPC's general outlook on life. High optimism leads to positive, upbeat dialogue and a tendency to see the bright side of situations. Low optimism can result in more pessimistic or downbeat responses." />
+        </label>
         {isEditing ? (
           <select
             className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -155,16 +160,7 @@ const CharacterPersonality = ({ personality, onPersonalityChange }) => {
             <option value="Positive">Positive</option>
           </select>
         ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.optimism}</p>
-        )}
-        {isEditing ? (
-          <textarea
-            className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-            value={editedPersonality.optimismDescription}
-            onChange={(e) => handlePersonalityChange('optimismDescription', e.target.value)}
-          />
-        ) : (
-          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4">{personality.optimismDescription}</p>
+          <p className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-50">{personality.optimism}</p>
         )}
       </div>
     </div>

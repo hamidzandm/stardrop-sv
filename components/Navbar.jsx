@@ -65,37 +65,37 @@ function Navbar() {
             className="flex flex-1 items-center justify-center md:items-stretch md:justify-start"
           >
             {/* <!-- Logo --> */}
-            <Link className="flex flex-shrink-0 items-center" href="/">
+            <Link className="flex flex-shrink-0 items-center" href="/characters/description">
               <Image
                 className="h-10 w-auto"
                 src={Logo}
-                alt="Stardew Valley AI"
+                alt="Stardrop"
                 width={0}
                 height={0}
               />
 
               <span className="hidden md:block text-white text-2xl font-bold ml-2"
-                >Stardew Valley AI</span
+                >Stardrop</span
               >
             </Link>
             {/* <!-- Desktop Menu Hidden below md screens --> */}
             <div className="hidden md:ml-6 md:block">
               <div className="flex space-x-2">
-                <Link
+                {/* <Link
                   href="/"
                   className={`${
                     pathname === '/' ? 'bg-black' : ''
                   } text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2`}                  >
                     Home
                   
-                  </Link>
-                <Link
+                  </Link> */}
+                {/* <Link
                   href="/characters"
                   className={`${
                     pathname === '/characters' ? 'bg-black' : ''
                   } text-white hover:bg-gray-900 hover:text-white rounded-md px-3 py-2`}                  >
                     Characters
-                  </ Link>
+                  </ Link> */}
                   {session && (
                     <Link
                     href="/characters/add"
@@ -244,19 +244,19 @@ function Navbar() {
       {/* <!-- Mobile menu, show/hide based on menu state. --> */}
       {isMobileMenuOpen && (<div id="mobile-menu">
         <div className="space-y-1 px-2 pb-3 pt-2">
-          <Link
+          {/* <Link
             href="/"
             className={`${
                 pathname === '/' ? 'bg-black' : ''
               } text-white block rounded-md px-3 py-2 text-base font-medium`}            >
                 Home
-            </ Link>
-          <Link
+            </ Link> */}
+          {/* <Link
             href="/characters"
             className={`${
                 pathname === '/characters' ? 'bg-black' : ''
               } text-white block rounded-md px-3 py-2 text-base font-medium`}            >
-                Characters</Link>
+                Characters</Link> */}
             {session && (
             <Link
             href="/characters/add"

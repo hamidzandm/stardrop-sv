@@ -21,25 +21,26 @@ const CharacterDialoguesTable = ({ dialogues = [], loading }) => {
   const formattedDialogues = formatDialogues(dialogues);
 
   return (
-    <div className="mb-4 p-4 bg-white rounded-lg shadow-inner">
-      <h2 className="text-xl font-bold mb-2">Dialogues</h2>
+    <div className="mb-4 bg-white rounded-lg shadow-lg p-6">
       {loading ? (
         <Spinner />
       ) : (
-        <div className="overflow-y-auto max-h-96 bg-gray-200 rounded-lg p-4">
+        <div className="bg-gray-50 rounded-lg p-6">
           {Object.keys(formattedDialogues).length === 0 ? (
-            <p>Wait for dialogues...</p>
+            <p className="text-gray-500">Wait for dialogues...</p>
           ) : (
-            <ul className="list-disc list-inside pl-4">
+            <div>
               {Object.entries(formattedDialogues).map(([location, locationDialogues], index) => (
-                <li key={index} className="mb-4">
-                  <h3 className="font-bold text-lg mb-2">{formatLocationName(location)}</h3>
-                  {locationDialogues.map((dialogue, idx) => (
-                    <p key={idx} className="italic text-gray-700 ml-4">"{dialogue}"</p>
-                  ))}
-                </li>
+                <div key={index} className="mb-8">
+                  <h3 className="font-bold text-xl mb-4 text-blue-600">{formatLocationName(location)}</h3>
+                  <div className="space-y-2">
+                    {locationDialogues.map((dialogue, idx) => (
+                      <p key={idx} className="italic text-gray-700 pl-4 border-l-4 border-blue-200">"{dialogue}"</p>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       )}

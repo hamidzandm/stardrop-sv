@@ -1,7 +1,8 @@
-'use client'
+'use client';
 import { generateExpansion, generateHighlights, generateDescription } from '@/llm_langchain';
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { FaLock, FaLockOpen } from "react-icons/fa";
 import Spinner from './Spinner'; // Adjust the path according to your project structure
 
 const CharacterHighlights = () => {
@@ -12,6 +13,17 @@ const CharacterHighlights = () => {
   const [loadingIndex, setLoadingIndex] = useState(null);
   const [regeneratingIndex, setRegeneratingIndex] = useState(null);
   const [pinnedHighlights, setPinnedHighlights] = useState([]);
+
+  useEffect(() => {
+    const storedPinnedHighlights = sessionStorage.getItem('pinnedHighlights');
+    if (storedPinnedHighlights) {
+      setPinnedHighlights(JSON.parse(storedPinnedHighlights));
+    }
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem('pinnedHighlights', JSON.stringify(pinnedHighlights));
+  }, [pinnedHighlights]);
 
   async function handleView(highlight, index) {
     setLoading(true);
@@ -32,14 +44,9 @@ const CharacterHighlights = () => {
     setRegeneratingIndex(index);
     setLoading(true);
     try {
-      // Step 1: Generate the description based on the current highlight
       const descriptionResponse = await generateDescription(highlights[index]);
-      
-      // Step 2: Use the generated description as input to generate new highlights
       const highlightsResponse = await generateHighlights(descriptionResponse);
       const newHighlight = highlightsResponse[0];
-      
-      // Step 3: Update the highlights array
       const updatedHighlights = [...highlights];
       updatedHighlights[index] = newHighlight;
       setHighlights(updatedHighlights);
@@ -57,7 +64,6 @@ const CharacterHighlights = () => {
       setPinnedHighlights(pinnedHighlights.filter(highlight => highlight.index !== index));
     } else {
       setPinnedHighlights([...pinnedHighlights, { highlight: highlights[index], index }]);
-      handleRegenerate(index);
     }
   };
 
@@ -71,7 +77,7 @@ const CharacterHighlights = () => {
         setLoading(true);
         try {
           const r = await generateHighlights('');
-          setHighlights(r.slice(0, 3)); // Set the initial highlights to the first 3 highlights
+          setHighlights(r.slice(0, 3));
         } catch (error) {
           console.error("Failed to generate initial highlights:", error);
         } finally {
@@ -80,7 +86,7 @@ const CharacterHighlights = () => {
       };
       fetchInitialHighlights();
     }
-  }, []); // Empty dependency array ensures the effect runs only once
+  }, []);
 
   return (
     <div className="flex flex-wrap justify-center relative">
@@ -89,48 +95,19 @@ const CharacterHighlights = () => {
           <Spinner />
         </div>
       )}
-      {pinnedHighlights.map((pinned, pinnedIndex) => (
-        <div key={pinnedIndex} className="border rounded-lg p-8 w-80 text-left shadow-md m-4 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center mb-4">
-              <img src={'/images/characters/2_portrait.png'} alt={pinned.highlight.name} className="w-16 h-16 mr-4" />
-              <div>
-                <p className="text-sm">Name: {pinned.highlight.name}</p>
-                <p className="text-sm">Age: {pinned.highlight.age}</p>
-                <p className="text-sm">Birthday: {pinned.highlight.birthday}</p>
-                <p className="text-sm">Gender: {pinned.highlight.gender}</p>
-              </div>
-            </div>
-            <h3 className="text-lg font-bold mb-2">{pinned.highlight.title}</h3>
-            <ul className="list-disc list-inside mb-2 text-sm">
-              {pinned.highlight.highlights.map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
-            </ul>
-            <p className="italic mb-4 text-sm">{pinned.highlight.description_qoute}</p>
-          </div>
-          <div className="flex justify-center mt-4 space-x-2">
-            <button 
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center justify-center"
-              onClick={() => handleView(pinned.highlight, pinned.index)}
-              disabled={loading && loadingIndex === pinned.index}
-            >
-              {loading && loadingIndex === pinned.index ? <Spinner /> : 'View'}
-            </button>
-            <button 
-              className="bg-red-500 text-white px-4 py-2 rounded flex items-center justify-center"
-              onClick={() => setPinnedHighlights(pinnedHighlights.filter(highlight => highlight.index !== pinned.index))}
-            >
-              Unpin
-            </button>
-          </div>
-        </div>
-      ))}
       {highlights.map((highlight, index) => (
-        <div key={index} className="border rounded-lg p-8 w-80 text-left shadow-md m-4 flex flex-col justify-between">
+        <div key={index} className="relative border rounded-lg p-8 w-80 text-left shadow-md m-4 flex flex-col justify-between">
+          <div className="absolute top-2 right-2">
+            <button 
+              className={`px-2 py-2 rounded flex items-center justify-center ${pinnedHighlights.find(highlight => highlight.index === index) ? 'bg-red-500 text-white' : 'bg-gray-500 text-white hover:bg-gray-600'}`}
+              onClick={() => handlePin(index)}
+            >
+              {pinnedHighlights.find(highlight => highlight.index === index) ? <FaLock /> : <FaLockOpen />}
+            </button>
+          </div>
           <div>
             <div className="flex items-center mb-4">
-              <img src={'/images/characters/2_portrait.png'} alt={highlight.name} className="w-16 h-16 mr-4" />
+            <img src={highlight.gender === 'Female' ? '/images/f_sample.png' : '/images/m_sample.png'} alt={highlight.name} className="w-16 h-16 mr-4" />
               <div>
                 <p className="text-sm">Name: {highlight.name}</p>
                 <p className="text-sm">Age: {highlight.age}</p>
@@ -154,19 +131,15 @@ const CharacterHighlights = () => {
             >
               {loading && loadingIndex === index ? <Spinner /> : 'View'}
             </button>
-            <button 
-              className={`px-4 py-2 rounded flex items-center justify-center ${pinnedHighlights.find(highlight => highlight.index === index) ? 'bg-red-500 text-white' : 'bg-gray-500 text-white hover:bg-gray-600'}`}
-              onClick={() => handlePin(index)}
-            >
-              {pinnedHighlights.find(highlight => highlight.index === index) ? 'Unpin' : 'Pin'}
-            </button>
-            <button 
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center justify-center"
-              onClick={() => handleRegenerate(index)}
-              disabled={loading && regeneratingIndex === index}
-            >
-              {loading && regeneratingIndex === index ? <Spinner /> : 'Regenerate'}
-            </button>
+            {!pinnedHighlights.find(highlight => highlight.index === index) && (
+              <button 
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 flex items-center justify-center"
+                onClick={() => handleRegenerate(index)}
+                disabled={loading && regeneratingIndex === index}
+              >
+                {loading && regeneratingIndex === index ? <Spinner /> : 'Regenerate'}
+              </button>
+            )}
           </div>
         </div>
       ))}

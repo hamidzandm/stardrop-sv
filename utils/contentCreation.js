@@ -38,7 +38,28 @@ export function transformCharacterData(character, dialogues, schedules, giftDial
   const hateKeys = extractCategoryKeys(nearestItemKeys, 'hate');
 
   return {
+    "Format": "2.3.0",
     "Changes": [
+      {
+        "Action": "Load",
+        "Target": `Portraits/${character.name}`,
+        "FromFile": `assets/${character.name}-Portraits.png`
+    },
+    {
+        "Action": "Load",
+        "Target": `Characters/${character.name}`,
+        "FromFile": `assets/${character.name}.png`
+    },
+      {
+        "Action": "Load",
+        "Target": `Characters/Dialogue/${character.name}`,
+        "FromFile": "assets/dialogue.json"
+      },
+      {
+        "Action": "Load",
+        "Target": `Characters/Schedules/${character.name}`,
+        "FromFile": "assets/schedule.json"
+      },
       {
         "Action": "EditData",
         "Target": "Data/Characters",
@@ -90,16 +111,6 @@ export function transformCharacterData(character, dialogues, schedules, giftDial
             "CustomFields": null
           }
         }
-      },
-      {
-        "Action": "Load",
-        "Target": `Characters/Dialogue/${character.name}`,
-        "Entries": dialogueEntries
-      },
-      {
-        "Action": "Load",
-        "Target": `Characters/Schedules/${character.name}`,
-        "Entries": schedules
       },
       {
         "Action": "EditData",

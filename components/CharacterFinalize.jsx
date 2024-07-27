@@ -131,55 +131,59 @@ const CharacterFinalize = ({ character }) => {
   };
 
   const downloadAllAsZip = async () => {
-    const zip = new JSZip();
-    zip.file("content.json", jsonInput);
-    zip.file("schedule.json", scheduleJson);
+  const zip = new JSZip();
+  zip.file("content.json", jsonInput);
+  zip.file("schedule.json", scheduleJson);
 
-    const dialoguesJson = dialogues.reduce((acc, { event, text }) => {
-      acc[event] = text;
-      return acc;
-    }, {});
-    zip.file("dialogues.json", JSON.stringify(dialoguesJson, null, 2));
+  const dialoguesJson = dialogues.reduce((acc, { event, text }) => {
+    acc[event] = text;
+    return acc;
+  }, {});
+  zip.file("dialogues.json", JSON.stringify(dialoguesJson, null, 2));
 
-    const assetPath = character.gender === 'Female' ? 'female_assets/' : 'male_assets/';
-    const assetFiles = character.gender === 'Female' 
-      ? ['f_portraits.png', 'f_sprites.png']
-      : ['m_portraits.png', 'm_sprites.png'];
+  const assetPath = character.gender === 'Female' ? '/images/female_assets/' : '/images/male_assets/';
+  const assetFiles = character.gender === 'Female' 
+    ? ['f_portraits.png', 'f_sprites.png']
+    : ['m_portraits.png', 'm_sprites.png'];
 
-    for (const file of assetFiles) {
-      const response = await fetch(`${assetPath}${file}`);
-      const blob = await response.blob();
-      const newFileName = file.includes('portraits')
-        ? `${character.name}-Portrait.png`
-        : `${character.name}.png`;
-      zip.file(newFileName, blob);
+  // Using Promise.all to ensure all fetches complete before proceeding
+  const assetPromises = assetFiles.map(async (file) => {
+    const response = await fetch(`${assetPath}${file}`);
+    const blob = await response.blob();
+    const newFileName = file.includes('portraits')
+      ? `${character.name}-Portrait.png`
+      : `${character.name}.png`;
+    zip.file(newFileName, blob);
+  });
+
+  await Promise.all(assetPromises);
+
+  // Generate manifest.json
+  const manifestJson = {
+    Name: character.name,
+    Author: "Hamid",
+    Version: "2.3.0",
+    Description: `Add ${character.name} Character`,
+    UniqueID: `Hamid.${character.name}`,
+    ContentPackFor: {
+      UniqueID: "Pathoschild.ContentPatcher"
     }
-
-    // Generate manifest.json
-    const manifestJson = {
-      Name: character.name,
-      Author: "Hamid",
-      Version: "2.3.0",
-      Description: `Add ${character.name} Character`,
-      UniqueID: `Hamid.${character.name}`,
-      ContentPackFor: {
-        UniqueID: "Pathoschild.ContentPatcher"
-      }
-    };
-    zip.file('manifest.json', JSON.stringify(manifestJson, null, 2));
-
-    // Generate PDF
-    const pdfBlob = await generatePdfBlob();
-    zip.file(`${character?.name}-page.pdf`, pdfBlob);
-
-    const content = await zip.generateAsync({ type: "blob" });
-    const url = URL.createObjectURL(content);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${character?.name}-all-files.zip`;
-    a.click();
-    URL.revokeObjectURL(url);
   };
+  zip.file('manifest.json', JSON.stringify(manifestJson, null, 2));
+
+  // Generate PDF
+  const pdfBlob = await generatePdfBlob();
+  zip.file(`${character?.name}-page.pdf`, pdfBlob);
+
+  const content = await zip.generateAsync({ type: "blob" });
+  const url = URL.createObjectURL(content);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${character?.name}-all-files.zip`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
 
   const generatePdfBlob = async () => {
     const canvas = await html2canvas(pageRef.current, { scale: 2, useCORS: true });

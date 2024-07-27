@@ -190,7 +190,33 @@ export async function generateSchedule(expansion) {
   Generate same schedules for Monday, Wednesday, and Friday.
   Generate different schedules for Tuesday and Thursday.
   Generate schedules for Saturday and Sunday to take some rest. use AnimalShop 5 14 3 for home of the NPC. All the schedules for the days must follow the same pattern.
-  For the dialogues, use the key format: <location><x><y>, and example such as Mountain_76_14: 'I come here for the peace and quiet.' Do not use the the third number. for example for Mountain 76 14 2 key use Mountain_76_14 as key. also include some dialogues for days of week like Mon, Tue, Wed, Thu, Fri, Sat, Sun. And include for days of month start from 1 to 10
+  For the dialogues, use the key format: <location><x><y>, and example such as Mountain_76_14: 'I come here for the peace and quiet.' Do not use the the third number. for example for Mountain 76 14 2 key use Mountain_76_14 as key. also include some dialogues for days of week like Mon, Tue, Wed, Thu, Fri, Sat, Sun. And include for days of month start from 1 to 10 . Here is an example of keys. Just consider this as an example to get inspired how to use keys:
+
+    "1"
+    "2"
+    "3"
+    "4"
+    "5"
+    "6"
+    "7"
+    "8"
+    "9"
+    "10"
+    "Mine_26_8"
+    "Mine_17_4"
+    "Mine_14_10"
+    "Beach_81_12"
+    "Forest_34_96"
+    "Forest_19_25"
+    "Mountain_76_14"
+    "Mon"
+    "Tue"
+    "Wed"
+    "Thu"
+    "Fri"
+    "Sat"
+    "Sun"
+
   Provide NPC's schedule for different times, day of the week, including the location and coordinates, and create dialogues based on their location and coordinates at specific times. The schedule should include different activities for specific days of the week. The activities should be realistic and varied, reflecting different times of day and locations within Stardew Valley. It is very important to include location and co-ordinates only from the following list:
   
   Mine 26 8 1

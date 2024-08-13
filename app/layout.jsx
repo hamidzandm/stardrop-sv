@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import AuthProvider from '@/components/AuthProvider';
 
 export const metadata = {
-    title: 'Stardrop',
+    title: 'StarCharM',
     description: 'Help you to create character for the Stardew Valley game'
 }
 const MainLayout = ({children}) => {

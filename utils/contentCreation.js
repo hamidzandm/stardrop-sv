@@ -43,7 +43,7 @@ export function transformCharacterData(character, dialogues, schedules, giftDial
       {
         "Action": "Load",
         "Target": `Portraits/${character.name}`,
-        "FromFile": `assets/${character.name}-Portraits.png`
+        "FromFile": `assets/${character.name}-Portrait.png`
     },
     {
         "Action": "Load",
@@ -53,7 +53,7 @@ export function transformCharacterData(character, dialogues, schedules, giftDial
       {
         "Action": "Load",
         "Target": `Characters/Dialogue/${character.name}`,
-        "FromFile": "assets/dialogue.json"
+        "FromFile": "assets/dialogues.json"
       },
       {
         "Action": "Load",
@@ -93,16 +93,15 @@ export function transformCharacterData(character, dialogues, schedules, giftDial
             "SpawnIfMissing": true,
             "Home": [
               {
-                "Id": "Default",
-                "Condition": null,
-                "Location": "AnimalShop",
-                "Tile": {
-                  "X": 7,
-                  "Y": 16
-                },
-                "Direction": "Down"
+                  "Id": "Default",
+                  "Location": "Town",
+                  "Tile": {
+                      "X": 30,
+                      "Y": 57
+                  },
+                  "Direction": "Down"
               }
-            ],
+          ],
             "TextureName": null,
             "Size": {
               "X": 16,
